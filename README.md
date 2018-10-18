@@ -3,7 +3,7 @@ This tool will mock browser to click your page that found in result of Google.
 
 ### How to work
 If your config.json has "items' property, this tool will use your setting to open "google search page". Then it will use the "pattern" property of the item to search matched url. 
-If it can find the url, it will click this url like brower's behavior. So this will have chance to improve google result ranking of your web page.
+If it can find the url, it will click this url like browser's behavior. So this will have chance to improve google result ranking of your web page.
 
 ### The Content of Config.json
 ```
