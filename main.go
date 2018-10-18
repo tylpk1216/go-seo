@@ -30,6 +30,10 @@ type List struct {
 	Items []Rule     `json:items`
 }
 
+func getResultMsg(s string, index, count int) string {
+     return fmt.Sprintf("%s, tried %d pages(%d)", s, index, count)    
+}
+
 func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp, index int) (string, error) {
 	err := bow.Open(r.Search)
 	if err != nil {
@@ -37,7 +41,6 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 	}
 
 	var nextPages []string
-
 	links := bow.Links()
 	url := ""
 
@@ -58,21 +61,20 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 		if index <= len(nextPages) {
 			// click next page
 			r.Search = nextPages[index-1]
-
+               
 			// sleep a while
 			time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
 			return clickPage(bow, arg, r, rex, index)
 		}
 
-		msg := fmt.Sprintf("not found, tried %d pages(%d)", index-1, len(nextPages))
-		return msg, nil
+		return getResultMsg("not found", index-1, len(nextPages)), nil
 	}
 
 	bow.SetUserAgent(arg.Agent)
 	time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
-	return "clicked", bow.Open(url)
+     return getResultMsg("clicked", index, len(nextPages)), bow.Open(url)
 }
 
 func main() {
@@ -84,7 +86,7 @@ func main() {
 
 	exePath := filepath.Dir(exe)
 
-	jsonFile := fmt.Sprintf("%v%v%v", exePath, string(os.PathSeparator), "\\config.json")
+	jsonFile := fmt.Sprintf("%v%v%v", exePath, string(os.PathSeparator), "config.json")
 	jsonBlob, err := ioutil.ReadFile(jsonFile)
 	if err != nil {
 		panic(fmt.Sprintf("Can't find %s", jsonFile))
