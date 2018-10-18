@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -76,12 +77,14 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 
 func main() {
 	// get config setting
-	root, err := os.Getwd()
+	exe, err := os.Executable()
 	if err != nil {
-        panic(err)
+		panic(err)
 	}
 
-    jsonFile := fmt.Sprintf("%v%v%v", root, string(os.PathSeparator), "\\config.json")
+	exePath := filepath.Dir(exe)
+
+	jsonFile := fmt.Sprintf("%v%v%v", exePath, string(os.PathSeparator), "\\config.json")
 	jsonBlob, err := ioutil.ReadFile(jsonFile)
 	if err != nil {
 		panic(fmt.Sprintf("Can't find %s", jsonFile))
@@ -93,7 +96,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("page pattern : ", list.Arg.NextPagePattern)
+	fmt.Printf("page pattern : %s \n\n", list.Arg.NextPagePattern)
 
 	// prepare shared variables
 	bow := surf.NewBrowser()
