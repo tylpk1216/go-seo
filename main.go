@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -75,7 +76,12 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 
 func main() {
 	// get config setting
-	jsonFile := "config.json"
+	root, err := os.Getwd()
+	if err != nil {
+        panic(err)
+	}
+
+    jsonFile := fmt.Sprintf("%v%v%v", root, string(os.PathSeparator), "\\config.json")
 	jsonBlob, err := ioutil.ReadFile(jsonFile)
 	if err != nil {
 		panic(fmt.Sprintf("Can't find %s", jsonFile))
