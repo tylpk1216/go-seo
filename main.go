@@ -31,7 +31,7 @@ type List struct {
 }
 
 func getResultMsg(s string, index, count int) string {
-     return fmt.Sprintf("%s, tried %d pages(%d)", s, index, count)    
+     return fmt.Sprintf("%s, tried %d pages(%d)", s, index, count)
 }
 
 func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp, index int) (string, error) {
@@ -61,7 +61,7 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 		if index <= len(nextPages) {
 			// click next page
 			r.Search = nextPages[index-1]
-               
+
 			// sleep a while
 			time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
@@ -74,7 +74,7 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 	bow.SetUserAgent(arg.Agent)
 	time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
-     return getResultMsg("clicked", index, len(nextPages)), bow.Open(url)
+    return getResultMsg("clicked", index, len(nextPages)), bow.Open(url)
 }
 
 func main() {
@@ -85,15 +85,14 @@ func main() {
 	}
 
 	exePath := filepath.Dir(exe)
-
 	jsonFile := fmt.Sprintf("%v%v%v", exePath, string(os.PathSeparator), "config.json")
+
 	jsonBlob, err := ioutil.ReadFile(jsonFile)
 	if err != nil {
 		panic(fmt.Sprintf("Can't find %s", jsonFile))
 	}
 
 	var list List
-
 	if err = json.Unmarshal(jsonBlob, &list); err != nil {
 		panic(err)
 	}
