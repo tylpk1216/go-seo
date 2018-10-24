@@ -30,11 +30,11 @@ type List struct {
 	Items []Rule     `json:items`
 }
 
-func getResultMsg(s string, index, count int) string {
-	return fmt.Sprintf("%s, tried %d pages(%d)", s, index, count)
+func getResultMsg(s string, pageIndex, count int) string {
+	return fmt.Sprintf("%s, tried %d pages(%d)", s, pageIndex, count)
 }
 
-func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp, index int) (string, error) {
+func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp, pageIndex int) (string, error) {
 	err := bow.Open(r.Search)
 	if err != nil {
 		return "", err
@@ -57,24 +57,24 @@ func clickPage(bow *browser.Browser, arg Parameters, r Rule, rex *regexp.Regexp,
 	}
 
 	if url == "" {
-		index++
-		if index <= len(nextPages) {
+		pageIndex++
+		if pageIndex <= len(nextPages) {
 			// click next page
-			r.Search = nextPages[index-1]
+			r.Search = nextPages[pageIndex-1]
 
 			// sleep a while
 			time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
-			return clickPage(bow, arg, r, rex, index)
+			return clickPage(bow, arg, r, rex, pageIndex)
 		}
 
-		return getResultMsg("not found", index-1, len(nextPages)), nil
+		return getResultMsg("not found", pageIndex-1, len(nextPages)), nil
 	}
 
 	bow.SetUserAgent(arg.Agent)
 	time.Sleep(time.Duration(arg.SleepSecs*1000) * time.Millisecond)
 
-	return getResultMsg("clicked", index, len(nextPages)), bow.Open(url)
+	return getResultMsg("clicked", pageIndex, len(nextPages)), bow.Open(url)
 }
 
 func main() {
